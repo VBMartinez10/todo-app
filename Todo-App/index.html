@@ -1,13 +1,94 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/main.js"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO DO LIST</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/calculator/src/output.css">
+</head>
+<body>
+    <div class="container w-[450px] mt-14 p-5 bg-blue-200 rounded-xl outline outline-blue-900 outline-offset-4 text-center">
+        <h1 class="text-3xl font-bold text-blue-900">TO-DO LIST</h1>
+        <div class="w-full p-5 space-x-3 text-xl font-poppins">
+            <input type="text" id="taskInp" class="h-10 w-auto p-2 rounded-lg focus:outline-blue-600" placeholder="Add new task">
+            <button type="submit" onclick="addTask()" class="h-10 w-20 px-4 bg-green-700 text-slate-200 font-semibold rounded-lg hover:ring-2 hover:ring-green-500 hover:ring-offset-1">Add</button>
+        </div>
+        <ul id="taskList" class="font-sofadi text-2xl flex items-left flex-col space-y-2 px-5 *:bg-blue-400 *:w-fit *:rounded-lg *:p-3" >
+        </ul>
+    </div>
+</body>
+
+<script>
+
+    const taskInput = document.getElementById('taskInp');
+    const taskList = document.getElementById('taskList');
+
+    loadTask();
+
+    //add task to list 
+    function addTask() {
+
+        const taskItem = taskInput.value.trim();
+
+        if (taskItem !== ''){
+            const li = document.createElement('li');
+           
+            li.textContent = taskItem;
+            taskList.appendChild(li);
+            li.addEventListener('click', completeTask);
+
+            taskInput.value = ''; 
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.style.backgroundColor = "red";
+            deleteBtn.style.marginLeft = "10px";
+            deleteBtn.style.borderRadius = "30px";
+            deleteBtn.style.padding = "3px";
+            deleteBtn.addEventListener('click', deleteTask);
+            li.appendChild(deleteBtn);
+
+
+            saveTask();
+
+        };
+    }
+
+    //complete task
+    function completeTask(event){
+        const task = event.target;
+        task.classList.toggle('completed!');
+    }
+
+    //delete task
+    function deleteTask(event){
+        const task = event.target.parentElement;
+        taskList.removeChild(task);
+    }
+
+    function saveTask(){
+        const task = [];
+        const taskItems = taskList.getElementsByTagName('li');
+
+        for (let i = 0; i < taskItems.length; i++){
+            task.push(taskItems[i].textContent);
+        }
+
+        localStorage.setItem('task', JSON.stringify(task));
+    }
+
+    function loadTask(){
+        const task = JSON.parse(localStorage.getItem('task'));
+
+        if (task) {
+            task.forEach(taskItem => {
+                const li = document.createElement('li');
+                li.textContent = taskItem;
+            })
+        }
+    }
+</script>
+
+
 </html>
